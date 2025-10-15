@@ -10,7 +10,6 @@
   <header class="sticky top-0 z-10 bg-white/80 backdrop-blur border-b border-slate-200">
     <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
       <div class="flex items-center gap-3">
-        <img src="/icons/icon-192.png" alt="Logo" class="w-8 h-8 rounded" />
         <h1 class="text-2xl font-semibold tracking-tight">Kanban Board</h1>
       </div>
     </div>
