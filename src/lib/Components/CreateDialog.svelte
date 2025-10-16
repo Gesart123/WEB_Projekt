@@ -1,12 +1,12 @@
 <script>
-  import { createEventDispatcher } from 'svelte';
-  const dispatch = createEventDispatcher();
-  let open = false;
+  const { onCreate } = props();   
+  const open = $state(false);    
 
   function submit(e) {
     e.preventDefault();
     const fd = new FormData(e.target);
     const now = new Date();
+
     const item = {
       id: Date.now(),
       title: fd.get('title'),
@@ -17,22 +17,33 @@
       priority: fd.get('priority'),
       lane: 'do'
     };
-    dispatch('create', item);
+
+    if (!item.title) return;
+    onCreate?.(item);   
     e.target.reset();
-    open = false;
+    open.set(false);
   }
 </script>
 
-<button onclick={() => (open = true)} class="rounded-xl px-3 py-2 bg-slate-900 text-white">
+<button
+  onclick={() => open.set(true)}
+  class="rounded-xl px-3 py-2 bg-slate-900 text-white"
+>
   Neues Issue
 </button>
 
-{#if open}
+{#if $open}
   <dialog open class="rounded-2xl shadow-2xl w-[min(92vw,560px)]">
     <form class="p-4 space-y-3" onsubmit={submit}>
       <div class="flex items-center justify-between">
         <h2 class="text-lg font-semibold">Neues Issue</h2>
-        <button type="button" class="border px-2 py-1 rounded" onclick={() => (open = false)}>×</button>
+        <button
+          type="button"
+          class="border px-2 py-1 rounded"
+          onclick={() => open.set(false)}
+        >
+          ×
+        </button>
       </div>
 
       <input
@@ -49,7 +60,14 @@
 
       <div class="grid grid-cols-3 gap-2">
         <input type="date" name="dueDate" class="border rounded px-3 py-2" />
-        <input type="number" name="storyPoints" min="0" step="1" value="1" class="border rounded px-3 py-2" />
+        <input
+          type="number"
+          name="storyPoints"
+          min="0"
+          step="1"
+          value="1"
+          class="border rounded px-3 py-2"
+        />
         <select name="priority" class="border rounded px-3 py-2">
           <option value="low">Niedrig</option>
           <option value="medium" selected>Mittel</option>
@@ -58,8 +76,16 @@
       </div>
 
       <div class="flex justify-end gap-2 pt-2">
-        <button type="button" class="border px-3 py-2 rounded" onclick={() => (open = false)}>Abbrechen</button>
-        <button class="bg-slate-900 text-white px-3 py-2 rounded">Anlegen</button>
+        <button
+          type="button"
+          class="border px-3 py-2 rounded"
+          onclick={() => open.set(false)}
+        >
+          Abbrechen
+        </button>
+        <button class="bg-slate-900 text-white px-3 py-2 rounded">
+          Anlegen
+        </button>
       </div>
     </form>
   </dialog>
