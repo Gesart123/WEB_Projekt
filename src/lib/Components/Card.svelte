@@ -1,17 +1,17 @@
 <script>
   import { fmtDateShort, fmtFromNow, isOverdue } from '$lib/utils/datefmt.js';
   import { itemToICS } from '$lib/utils/ics.js';
-
+ 
   const { item, onDelete } = $props();
-
+ 
   function drag(e) {
     e.dataTransfer.setData('text/plain', item.id);
   }
-
+ 
   function del() {
     if (confirm('Item löschen?')) onDelete?.(item);
   }
-
+ 
   function downloadICS() {
     const blob = itemToICS(item);
     if (!blob) return;
@@ -21,7 +21,7 @@
     a.download = `${item.title}.ics`;
     a.click();
   }
-
+ 
   async function shareItem() {
     const text = `${item.title}\n${item.description || ''}\nFällig: ${
       item.dueDate ? fmtDateShort(item.dueDate) : '–'
@@ -30,11 +30,11 @@
     else await navigator.clipboard.writeText(text);
   }
 </script>
-
+ 
 <article
-  draggable
+  draggable="true"
   ondragstart={drag}
-  class="rounded-xl border border-slate-200 bg-white p-3 shadow-sm hover:shadow transition"
+  class="rounded-xl border border-slate-200 bg-white p-3 shadow-sm hover:shadow transition-shadow cursor-move"
 >
   <div class="flex justify-between items-start gap-2">
     <div>
@@ -43,7 +43,7 @@
         <p class="text-sm text-slate-600">{item.description}</p>
       {/if}
     </div>
-
+ 
     <span
       class="text-[10px] uppercase px-2 py-1 rounded-full border
         {item.priority === 'high'
@@ -55,7 +55,7 @@
       {item.priority}
     </span>
   </div>
-
+ 
   <div class="mt-2 text-xs flex flex-wrap gap-2">
     <span class="border px-2 py-1 rounded bg-slate-50">
       SP: {item.storyPoints}
@@ -63,7 +63,7 @@
     <span class="border px-2 py-1 rounded bg-slate-50">
       Erstellt: {fmtDateShort(item.creationDate)}
     </span>
-
+ 
     {#if item.dueDate}
       <span
         class="border px-2 py-1 rounded
@@ -76,22 +76,23 @@
       </span>
     {/if}
   </div>
-
+ 
   {#if item.dueDate}
     <div class="mt-1 text-[11px] text-slate-500">
       ({fmtFromNow(item.dueDate)})
     </div>
   {/if}
-
+ 
   <div class="mt-3 flex gap-2">
-    <button onclick={downloadICS} class="px-2 py-1 border rounded">
+    <button onclick={downloadICS} class="px-2 py-1 border rounded hover:bg-slate-100 transition-colors">
       ICS
     </button>
-    <button onclick={shareItem} class="px-2 py-1 border rounded">
+    <button onclick={shareItem} class="px-2 py-1 border rounded hover:bg-slate-100 transition-colors">
       Teilen
     </button>
-    <button onclick={del} class="px-2 py-1 border rounded">
+    <button onclick={del} class="px-2 py-1 border rounded hover:bg-slate-100 transition-colors">
       Löschen
     </button>
   </div>
 </article>
+ 

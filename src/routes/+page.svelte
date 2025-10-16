@@ -51,31 +51,25 @@
   }
 </script>
 
-<header class="p-4 bg-gray-800 text-white flex justify-between">
+<header class="p-4 bg-gray-800 text-white flex justify-between items-center text-lg font-semibold">
   <h1>Kanban Board</h1>
   <span>Land: {country}</span>
 </header>
 
-<main class="max-w-6xl mx-auto px-4 py-6 space-y-4">
+<main  class="max-w-6xl mx-auto px-4 py-6 space-y-4 bg-gray-100 min-h-screen font-sans">
   <div class="flex items-center justify-between">
     <CreateDialog onCreate={addItem} />
-    <button onclick={exportCSV} class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300">
+    <button onclick={exportCSV} class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300 transition-colors">
       CSV Export
     </button>
   </div>
 
   <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
     {#each LANES as lane}
-      <Lane {lane} {items} onDrop={handleDrop} onDelete={handleDelete}>
-        <div class="text-right">Sum: {getLaneSum(lane.id)}</div>
-      </Lane>
+      <div class="relative">
+        <Lane {lane} {items} onDrop={handleDrop} onDelete={handleDelete} />
+        <div class="text-right text-sm text-gray-600 mt-2">Sum: {getLaneSum(lane.id)}</div>
+      </div>
     {/each}
   </div>
 </main>
-
-<style>
-  /* Elegantes Design: Dunkelgrau, saubere Abstände, sans-serif */
-  :global(body) { font-family: Arial, sans-serif; background: #f0f0f0; }
-  header { font-size: 1.2rem; }
-  button { transition: background 0.2s; }
-</style>
