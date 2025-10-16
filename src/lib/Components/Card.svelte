@@ -2,7 +2,6 @@
   import { fmtDateShort, fmtFromNow, isOverdue } from '$lib/utils/datefmt.js';
   import { itemToICS } from '$lib/utils/ics.js';
 
-  // 👉 Svelte 5 – neue API:
   const { item, onDelete } = $props();
 
   function drag(e) {
@@ -15,6 +14,7 @@
 
   function downloadICS() {
     const blob = itemToICS(item);
+    if (!blob) return;
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;

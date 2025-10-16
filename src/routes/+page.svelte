@@ -4,16 +4,15 @@
   import CreateDialog from '$lib/components/CreateDialog.svelte';
   import Lane from '$lib/components/Lane.svelte';
   import { exportAllCSV } from '$lib/utils/csv.js';
-  import { notifyDone } from '$lib/notifications.js';  
-
-  const LANES = ['do', 'doing', 'done', 'archiv'];
+  import { notifyDone } from '$lib/notifications.js';
+  import { LANES, getItems, saveItems } from '$lib/store.js';
 
   let items = $state([]);
   let country = $state('Unbekannt');
 
   onMount(async () => {
     if (browser) {
-      items = JSON.parse(localStorage.getItem('kanban-items') || '[]');
+      items = getItems();
       const res = await fetch('https://country.is/');
       const data = await res.json();
       country = data.country || 'Unbekannt';
@@ -22,7 +21,7 @@
 
   $effect(() => {
     if (browser && items.length > 0) {
-      localStorage.setItem('kanban-items', JSON.stringify(items));
+      saveItems(items);
     }
   });
 
@@ -35,6 +34,7 @@
     if (idx === -1) return;
     const prev = items[idx].lane;
     items[idx].lane = targetLane;
+    items = [...items]; // Trigger reactivity
     if (prev !== 'done' && targetLane === 'done') notifyDone(items[idx]);
   }
 
@@ -46,8 +46,8 @@
     exportAllCSV(items);
   }
 
-  function getLaneSum(lane) {
-    return items.filter(i => i.lane === lane).reduce((sum, i) => sum + (i.storyPoints || 0), 0);
+  function getLaneSum(laneId) {
+    return items.filter(i => i.lane === laneId).reduce((sum, i) => sum + (i.storyPoints || 0), 0);
   }
 </script>
 
@@ -67,7 +67,7 @@
   <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
     {#each LANES as lane}
       <Lane {lane} {items} onDrop={handleDrop} onDelete={handleDelete}>
-        <div class="text-right">Sum: {getLaneSum(lane)}</div>
+        <div class="text-right">Sum: {getLaneSum(lane.id)}</div>
       </Lane>
     {/each}
   </div>

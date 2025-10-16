@@ -1,16 +1,12 @@
 export function exportAllCSV(items) {
-  const headers = ['id','title','description','creationDate','dueDate','storyPoints','priority','lane'];
-  const rows = [headers.join(',')];
-  for (const it of items) rows.push(headers.map(h => csvCell(it[h])).join(','));
-  const blob = new Blob([rows.join('\\n')], { type: 'text/csv;charset=utf-8;' });
+  const escapeField = (field) => `"${(field || '').toString().replace(/"/g, '""')}"`;
+  const csv = ['id,title,description,creationDate,dueDate,storyPoints,priority,lane']
+    .concat(items.map(i => `${i.id},${escapeField(i.title)},${escapeField(i.description)},${i.creationDate},${i.dueDate},${i.storyPoints},${i.priority},${i.lane}`))
+    .join('\n');
+  const blob = new Blob([csv], { type: 'text/csv' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = 'kanban-items.csv';
+  a.download = 'kanban.csv';
   a.click();
-}
-
-function csvCell(v) {
-  const s = String(v ?? '');
-  return /[\",\\n]/.test(s) ? '"' + s.replaceAll('"', '""') + '"' : s;
 }

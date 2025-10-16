@@ -1,16 +1,14 @@
-import { format, parseISO, isAfter, formatDistanceToNowStrict } from 'date-fns';
+import { format, formatDistanceToNow, isPast } from 'date-fns';
+import de from 'date-fns/locale/de';
 
-export function fmtDateShort(iso) {
-  const d = typeof iso === 'string' ? parseISO(iso) : new Date(iso);
-  return format(d, 'dd.MM.yyyy');
+export function fmtDateShort(date) {
+  return format(new Date(date), 'dd.MM.yyyy', { locale: de });
 }
 
-export function fmtFromNow(iso) {
-  const d = typeof iso === 'string' ? parseISO(iso) : new Date(iso);
-  return formatDistanceToNowStrict(d, { addSuffix: true });
+export function fmtFromNow(date) {
+  return formatDistanceToNow(new Date(date), { locale: de, addSuffix: true });
 }
 
-export function isOverdue(iso) {
-  const d = typeof iso === 'string' ? parseISO(iso) : new Date(iso);
-  return isAfter(new Date(), d);
+export function isOverdue(date) {
+  return isPast(new Date(date));
 }
