@@ -1,5 +1,6 @@
 <script>
-  import Card from './Card.svelte';
+	import Card from "./Card.svelte";
+
  
   let { lane, items, onDrop, onDelete } = $props();
   const filteredItems = $derived(items.filter(i => i.lane === lane.id));
