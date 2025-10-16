@@ -2,7 +2,7 @@
   import { fmtDateShort, fmtFromNow, isOverdue } from '$lib/utils/datefmt.js';
   import { itemToICS } from '$lib/utils/ics.js';
 
-  const { it, onDelete } = props();  
+  const { it, onDelete } = $props();  
 
   function drag(e) {
     e.dataTransfer.setData('text/plain', it.id);

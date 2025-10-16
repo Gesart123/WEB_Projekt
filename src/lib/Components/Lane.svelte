@@ -1,7 +1,7 @@
 <script>
   import Card from './Card.svelte';
 
-  const { lane, items, onDelete, onDrop } = props();
+  const { lane, items, onDelete, onDrop } = $props();
 
   const list = $derived(items.filter(i => i.lane === lane.id));
   const totalSP = $derived(list.reduce((s, i) => s + (Number(i.storyPoints) || 0), 0));

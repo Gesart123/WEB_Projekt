@@ -1,6 +1,6 @@
 <script>
-  const { onCreate } = props();   
-  const open = $state(false);    
+  let { onCreate } = $props();  
+  let open = $state(false);    
 
   function submit(e) {
     e.preventDefault();
@@ -15,24 +15,31 @@
       dueDate: fd.get('dueDate'),
       storyPoints: Number(fd.get('storyPoints') || 0),
       priority: fd.get('priority'),
-      lane: 'do'
+      lane: 'todo'  // Starting lane
     };
 
-    if (!item.title) return;
+    if (!item.title) {
+      alert('Title is required!');
+      return;
+    }
     onCreate?.(item);   
     e.target.reset();
-    open.set(false);
+    open = false;
+  }
+
+  function toggle() {
+    open = !open;
   }
 </script>
 
 <button
-  onclick={() => open.set(true)}
+  onclick={toggle}
   class="rounded-xl px-3 py-2 bg-slate-900 text-white"
 >
   Neues Issue
 </button>
 
-{#if $open}
+{#if open}
   <dialog open class="rounded-2xl shadow-2xl w-[min(92vw,560px)]">
     <form class="p-4 space-y-3" onsubmit={submit}>
       <div class="flex items-center justify-between">
@@ -40,17 +47,20 @@
         <button
           type="button"
           class="border px-2 py-1 rounded"
-          onclick={() => open.set(false)}
+          onclick={toggle}
         >
           ×
         </button>
       </div>
 
+      <!-- Focus on open for better UX -->
+      <!-- svelte-ignore a11y_autofocus -->
       <input
         name="title"
         required
         placeholder="Titel"
         class="w-full border rounded px-3 py-2"
+        autofocus
       />
       <textarea
         name="description"
@@ -79,7 +89,7 @@
         <button
           type="button"
           class="border px-3 py-2 rounded"
-          onclick={() => open.set(false)}
+          onclick={toggle}
         >
           Abbrechen
         </button>
