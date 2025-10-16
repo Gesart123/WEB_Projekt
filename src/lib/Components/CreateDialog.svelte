@@ -1,12 +1,11 @@
 <script>
-  let { onCreate } = $props();  
-  let open = $state(false);    
+  let { onCreate } = $props();
+  let open = $state(false);
 
   function submit(e) {
     e.preventDefault();
     const fd = new FormData(e.target);
     const now = new Date();
-
     const item = {
       id: Date.now(),
       title: fd.get('title'),
@@ -15,88 +14,39 @@
       dueDate: fd.get('dueDate'),
       storyPoints: Number(fd.get('storyPoints') || 0),
       priority: fd.get('priority'),
-      lane: 'todo'  // Starting lane
+      lane: 'do'
     };
-
-    if (!item.title) {
-      alert('Title is required!');
-      return;
-    }
-    onCreate?.(item);   
+    if (!item.title) return alert('Titel erforderlich');
+    onCreate(item);
     e.target.reset();
     open = false;
   }
-
-  function toggle() {
-    open = !open;
-  }
 </script>
 
-<button
-  onclick={toggle}
-  class="rounded-xl px-3 py-2 bg-slate-900 text-white"
->
+<button onclick={() => open = true} class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
   Neues Issue
 </button>
 
 {#if open}
-  <dialog open class="rounded-2xl shadow-2xl w-[min(92vw,560px)]">
-    <form class="p-4 space-y-3" onsubmit={submit}>
-      <div class="flex items-center justify-between">
-        <h2 class="text-lg font-semibold">Neues Issue</h2>
-        <button
-          type="button"
-          class="border px-2 py-1 rounded"
-          onclick={toggle}
-        >
-          ×
-        </button>
-      </div>
-
-      <!-- Focus on open for better UX -->
-      <!-- svelte-ignore a11y_autofocus -->
-      <input
-        name="title"
-        required
-        placeholder="Titel"
-        class="w-full border rounded px-3 py-2"
-        autofocus
-      />
-      <textarea
-        name="description"
-        placeholder="Beschreibung"
-        class="w-full border rounded px-3 py-2"
-      ></textarea>
-
-      <div class="grid grid-cols-3 gap-2">
-        <input type="date" name="dueDate" class="border rounded px-3 py-2" />
-        <input
-          type="number"
-          name="storyPoints"
-          min="0"
-          step="1"
-          value="1"
-          class="border rounded px-3 py-2"
-        />
-        <select name="priority" class="border rounded px-3 py-2">
-          <option value="low">Niedrig</option>
-          <option value="medium" selected>Mittel</option>
-          <option value="high">Hoch</option>
-        </select>
-      </div>
-
-      <div class="flex justify-end gap-2 pt-2">
-        <button
-          type="button"
-          class="border px-3 py-2 rounded"
-          onclick={toggle}
-        >
-          Abbrechen
-        </button>
-        <button class="bg-slate-900 text-white px-3 py-2 rounded">
-          Anlegen
-        </button>
+  <dialog open class="p-6 bg-white rounded shadow-lg max-w-md">
+    <form onsubmit={submit} class="space-y-4">
+      <input name="title" required placeholder="Titel" class="w-full p-2 border rounded" />
+      <textarea name="description" placeholder="Beschreibung" class="w-full p-2 border rounded"></textarea>
+      <input type="date" name="dueDate" class="p-2 border rounded" />
+      <input type="number" name="storyPoints" min="0" value="1" class="p-2 border rounded" />
+      <select name="priority" class="p-2 border rounded">
+        <option value="low">Niedrig</option>
+        <option value="medium">Mittel</option>
+        <option value="high">Hoch</option>
+      </select>
+      <div class="flex justify-end gap-2">
+        <button type="button" onclick={() => open = false} class="px-4 py-2 bg-gray-200 rounded">Abbrechen</button>
+        <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded">Anlegen</button>
       </div>
     </form>
   </dialog>
 {/if}
+
+<style>
+  dialog { border: none; }
+</style>
