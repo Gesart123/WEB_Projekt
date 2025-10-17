@@ -1,6 +1,7 @@
 <script>
   import { onMount } from 'svelte';
   import { browser } from '$app/environment';
+  import Header from '$lib/components/Header.svelte';
   import CreateDialog from '$lib/components/CreateDialog.svelte';
   import Lane from '$lib/components/Lane.svelte';
   import { exportAllCSV } from '$lib/utils/csv.js';
@@ -8,21 +9,12 @@
   import { LANES, getItems, saveItems } from '$lib/store.js';
 
   let items = $state([]);
-  let country = $state('Unbekannt');
 
-  onMount(async () => {
-  if (browser) {
-    items = getItems();
-    try {
-      const res = await fetch('https://country.is/');
-      const data = await res.json();
-      country = data.country || 'AL'; 
-    } catch (err) {
-      country = 'AL';
+  onMount(() => {
+    if (browser) {
+      items = getItems();
     }
-  }
-});
-
+  });
 
   $effect(() => {
     if (browser && items.length > 0) {
@@ -39,7 +31,7 @@
     if (idx === -1) return;
     const prev = items[idx].lane;
     items[idx].lane = targetLane;
-    items = [...items]; // Trigger reactivity
+    items = [...items];
     if (prev !== 'done' && targetLane === 'done') notifyDone(items[idx]);
   }
 
@@ -56,15 +48,12 @@
   }
 </script>
 
-<header class="p-4 bg-gray-800 text-white flex justify-between items-center text-lg font-semibold">
-  <h1>Kanban Board</h1>
-  <span>Land: {country}</span>
-</header>
+<Header title="Kanban Board" />
 
-<main  class="max-w-6xl mx-auto px-4 py-6 space-y-4 bg-gray-100 min-h-screen font-sans">
+<main class="max-w-6xl mx-auto px-4 py-6 space-y-4 bg-gray-100 min-h-screen font-sans">
   <div class="flex items-center justify-between">
     <CreateDialog onCreate={addItem} />
-    <button onclick={exportCSV} class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300 transition-colors">
+    <button on:click={exportCSV} class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300 transition-colors">
       CSV Export
     </button>
   </div>
