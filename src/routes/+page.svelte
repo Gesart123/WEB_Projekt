@@ -1,8 +1,8 @@
 <script>
   import { onMount } from 'svelte';
   import { browser } from '$app/environment';
-  import CreateDialog from '$lib/components/CreateDialog.svelte';
-  import Lane from '$lib/components/Lane.svelte';
+  import CreateDialog from '$lib/componentss/CreateDialog.svelte';
+  import Lane from '$lib/componentss/Lane.svelte';
   import { exportAllCSV } from '$lib/utils/csv.js';
   import { notifyDone } from '$lib/notifications.js';
   import { LANES, getItems, saveItems } from '$lib/store.js';
