@@ -11,13 +11,18 @@
   let country = $state('Unbekannt');
 
   onMount(async () => {
-    if (browser) {
-      items = getItems();
+  if (browser) {
+    items = getItems();
+    try {
       const res = await fetch('https://country.is/');
       const data = await res.json();
-      country = data.country || 'Unbekannt';
+      country = data.country || 'AL'; 
+    } catch (err) {
+      country = 'AL';
     }
-  });
+  }
+});
+
 
   $effect(() => {
     if (browser && items.length > 0) {
