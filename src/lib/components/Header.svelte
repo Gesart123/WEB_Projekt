@@ -1,16 +1,12 @@
 <script>
-  import { onMount } from 'svelte';
-  import { browser } from '$app/environment';
+  import { onMount } from "svelte";
 
-  export let title = 'Kanban Board';
-
-  let country = 'Loading...';
-  let countryCode = '';
-  let flag = '🏳️';
+  let country = "";
+  let countryCode = "";
 
   async function getCountry() {
     if (!navigator.geolocation) {
-      country = 'Geolocation not supported';
+      country = "Geolocation nicht unterstützt";
       return;
     }
 
@@ -23,46 +19,46 @@
             `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`
           );
           const data = await res.json();
-          country = data.address?.country || 'Unknown country';
+          country = data.address?.country || "Unbekanntes Land";
 
-          if (country !== 'Unknown country') {
+          if (country !== "Unbekanntes Land") {
             const countryRes = await fetch(
               `https://restcountries.com/v3.1/name/${encodeURIComponent(country)}?fields=cca2`
             );
             const countryData = await countryRes.json();
-            countryCode = countryData?.[0]?.cca2 || '';
-            if (countryCode) flag = countryCodeToFlag(countryCode);
+            countryCode = countryData[0]?.cca2 || "";
           }
         } catch (err) {
-          console.error('Error fetching country info:', err);
-          country = 'Failed to fetch country';
-          flag = '🏳️';
+          country = "Fehler beim Laden";
+          console.error(err);
         }
       },
-      (err) => {
-        console.warn('Geolocation denied or error:', err);
-        country = 'Permission denied';
-        flag = '🚫';
+      () => {
+        country = "Berechtigung verweigert";
       }
     );
   }
 
-  function countryCodeToFlag(code) {
-    if (!code) return '🏳️';
-    return code
-      .toUpperCase()
-      .replace(/./g, char => String.fromCodePoint(127397 + char.charCodeAt(0)));
-  }
-
   onMount(() => {
-    if (browser) getCountry();
+    getCountry();
   });
 </script>
 
-<header class="p-4 bg-gray-800 text-white flex justify-between items-center text-lg font-semibold">
-  <h1>{title}</h1>
-  <span class="flex items-center gap-2">
-    <span class="text-2xl">{flag}</span>
-    <span>{country}</span>
-  </span>
+<header class="w-full bg-white shadow-md p-4 flex items-center justify-between">
+  <h1 class="text-xl font-semibold text-gray-800">🌍 My Kanban App</h1>
+
+  <div class="flex items-center gap-3 text-gray-700 text-sm">
+    {#if countryCode && country && country !== "Unbekanntes Land" && country !== "Fehler beim Laden" && country !== "Berechtigung verweigert"}
+      <img
+        src={`https://flagsapi.com/${countryCode}/flat/32.png`}
+        alt={`${country} flag`}
+        class="w-8 h-8 rounded shadow-sm"
+      />
+      <span class="font-medium">{country}</span>
+    {:else}
+      <div class="flex items-center gap-2 text-gray-500">
+        <span>📍 {country || "Lädt..."}</span>
+      </div>
+    {/if}
+  </div>
 </header>

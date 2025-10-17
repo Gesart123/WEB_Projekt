@@ -51,12 +51,15 @@
 <Header title="Kanban Board" />
 
 <main class="max-w-6xl mx-auto px-4 py-6 space-y-4 bg-gray-100 min-h-screen font-sans">
-  <div class="flex items-center justify-between">
-    <CreateDialog onCreate={addItem} />
-    <button on:click={exportCSV} class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300 transition-colors">
-      CSV Export
-    </button>
-  </div>
+  <div class="fixed top-0 left-0 w-full z-50 bg-white shadow-md flex items-center justify-between p-4">
+  <CreateDialog onCreate={addItem} />
+  <button
+    onclick={exportCSV}
+    class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300 transition-colors font-medium"
+  >
+    CSV Export
+  </button>
+</div>
 
   <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
     {#each LANES as lane}

@@ -28,7 +28,7 @@
 </button>
 
 {#if open}
-  <dialog open class="p-6 bg-white rounded-lg shadow-lg max-w-md border-0">
+  <dialog open class=" top-50 p-6 bg-white rounded-lg shadow-lg max-w-md border-0">
     <form onsubmit={submit} class="space-y-4">
       <input name="title" required placeholder="Titel" class="w-full p-2 border border-slate-300 rounded" />
       <textarea name="description" placeholder="Beschreibung" class="w-full p-2 border border-slate-300 rounded"></textarea>
