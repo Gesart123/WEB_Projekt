@@ -3,10 +3,11 @@
 
   let country = "";
   let countryCode = "";
+  let status = "Detecting location...";
 
   async function getCountry() {
     if (!navigator.geolocation) {
-      country = "Geolocation nicht unterstützt";
+      status = "Geolocation not supported";
       return;
     }
 
@@ -19,22 +20,25 @@
             `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`
           );
           const data = await res.json();
-          country = data.address?.country || "Unbekanntes Land";
+          country = data.address?.country || "Unknown country";
 
-          if (country !== "Unbekanntes Land") {
+          if (country && country !== "Unknown country") {
             const countryRes = await fetch(
               `https://restcountries.com/v3.1/name/${encodeURIComponent(country)}?fields=cca2`
             );
             const countryData = await countryRes.json();
             countryCode = countryData[0]?.cca2 || "";
+            status = "";
+          } else {
+            status = "Unknown country";
           }
         } catch (err) {
-          country = "Fehler beim Laden";
+          status = "Error loading location";
           console.error(err);
         }
       },
       () => {
-        country = "Berechtigung verweigert";
+        status = "Location permission denied";
       }
     );
   }
@@ -44,20 +48,26 @@
   });
 </script>
 
-<header class="w-full bg-white shadow-md p-4 flex items-center justify-between">
-  <h1 class="text-xl font-semibold text-gray-800">🌍 My Kanban App</h1>
+<header
+  class="w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-md p-4 flex items-center justify-between rounded-b-2xl"
+>
+  <h1 class="text-xl font-semibold tracking-wide flex items-center gap-2">
+    <span class="text-2xl">🗂️</span> My Kanban App
+  </h1>
 
-  <div class="flex items-center gap-3 text-gray-700 text-sm">
-    {#if countryCode && country && country !== "Unbekanntes Land" && country !== "Fehler beim Laden" && country !== "Berechtigung verweigert"}
-      <img
-        src={`https://flagsapi.com/${countryCode}/flat/32.png`}
-        alt={`${country} flag`}
-        class="w-8 h-8 rounded shadow-sm"
-      />
-      <span class="font-medium">{country}</span>
+  <div class="flex items-center gap-3 text-sm">
+    {#if countryCode && country && !status}
+      <div class="flex items-center gap-2 bg-white/20 px-3 py-1.5 rounded-full backdrop-blur-sm shadow-sm">
+        <img
+          src={`https://flagsapi.com/${countryCode}/flat/32.png`}
+          alt={`${country} flag`}
+          class="w-6 h-6 rounded-full shadow-sm border border-white/30"
+        />
+        <span class="font-medium text-white drop-shadow-sm">{country}</span>
+      </div>
     {:else}
-      <div class="flex items-center gap-2 text-gray-500">
-        <span>📍 {country || "Lädt..."}</span>
+      <div class="flex items-center gap-2 text-white/80 bg-white/10 px-3 py-1.5 rounded-full backdrop-blur-sm shadow-sm">
+        <span>📍 {status}</span>
       </div>
     {/if}
   </div>
