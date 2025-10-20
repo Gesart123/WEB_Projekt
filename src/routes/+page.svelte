@@ -27,7 +27,7 @@
   }
 
   function handleDrop({ id, targetLane }) {
-    const idx = items.findIndex(i => i.id === Number(id));
+    const idx = items.findIndex((i) => i.id === Number(id));
     if (idx === -1) return;
     const prev = items[idx].lane;
     items[idx].lane = targetLane;
@@ -36,7 +36,7 @@
   }
 
   function handleDelete(item) {
-    items = items.filter(i => i.id !== item.id);
+    items = items.filter((i) => i.id !== item.id);
   }
 
   function exportCSV() {
@@ -44,29 +44,57 @@
   }
 
   function getLaneSum(laneId) {
-    return items.filter(i => i.lane === laneId).reduce((sum, i) => sum + (i.storyPoints || 0), 0);
+    return items
+      .filter((i) => i.lane === laneId)
+      .reduce((sum, i) => sum + (i.storyPoints || 0), 0);
   }
 </script>
 
+<!-- Header with country info -->
 <Header title="Kanban Board" />
 
-<main class="max-w-6xl mx-auto px-4 py-6 space-y-4 bg-gray-100 min-h-screen font-sans">
-  <div class="fixed top-0 left-0 w-full z-50 bg-white shadow-md flex items-center justify-between p-4">
-  <CreateDialog onCreate={addItem} />
-  <button
-    onclick={exportCSV}
-    class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300 transition-colors font-medium"
+<main class="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 font-sans">
+  <!-- Sticky Top Bar -->
+  <div
+    class="sticky top-0 left-0 z-40 backdrop-blur bg-white/90 border-b border-slate-200 shadow-sm flex items-center justify-between px-6 py-3"
   >
-    CSV Export
-  </button>
-</div>
+    <CreateDialog onCreate={addItem} />
 
-  <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-    {#each LANES as lane}
-      <div class="relative">
-        <Lane {lane} {items} onDrop={handleDrop} onDelete={handleDelete} />
-        <div class="text-right text-sm text-gray-600 mt-2">Sum: {getLaneSum(lane.id)}</div>
-      </div>
-    {/each}
+    <button
+      onclick={exportCSV}
+      class="px-4 py-2 text-sm font-medium bg-blue-600 text-white rounded-lg shadow-sm hover:bg-blue-700 hover:shadow transition-all"
+    >
+      ⬇️ Export CSV
+    </button>
   </div>
+
+  <!-- Kanban Board -->
+  <section class="max-w-7xl mx-auto px-4 py-6">
+    <h1 class="text-2xl font-bold text-blue-700 mb-4 tracking-tight">
+      Project Overview
+    </h1>
+
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-5">
+      {#each LANES as lane}
+        <div
+          class="flex flex-col bg-white rounded-2xl shadow-sm border border-slate-200 hover:shadow-md transition-all duration-150"
+        >
+          <div
+            class="flex justify-between items-center px-4 py-2.5 bg-blue-50 border-b border-blue-100 rounded-t-2xl"
+          >
+            <h2 class="text-sm font-semibold text-blue-700 uppercase tracking-wide">
+              {lane.title}
+            </h2>
+            <span class="text-xs text-blue-600 font-medium">
+              SP: {getLaneSum(lane.id)}
+            </span>
+          </div>
+
+          <div class="p-3 flex-1 overflow-y-auto min-h-[250px]">
+            <Lane {lane} {items} onDrop={handleDrop} onDelete={handleDelete} />
+          </div>
+        </div>
+      {/each}
+    </div>
+  </section>
 </main>
