@@ -5,8 +5,9 @@
   import CreateDialog from '$lib/components/CreateDialog.svelte';
   import Lane from '$lib/components/Lane.svelte';
   import { exportAllCSV } from '$lib/utils/csv.js';
-  import { notifyDone } from '$lib/notifications.js';
+  import { notifyDone, enableNotifications } from '$lib/notifications.js';
   import { LANES, getItems, saveItems } from '$lib/store.js';
+  
 
   let items = $state([]);
 
