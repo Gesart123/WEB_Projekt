@@ -14,7 +14,6 @@
     if (browser) {
       items = getItems();
 
-      // ask permission once on mount (Chrome needs this early)
       if ('Notification' in window && Notification.permission === 'default') {
         Notification.requestPermission();
       }
@@ -38,7 +37,6 @@
     items[idx].lane = targetLane;
     items = [...items];
 
-    // ✅ Trigger notification when moved to "done"
     if (prev !== 'done' && targetLane === 'done') {
       notifyDone(items[idx]);
     }
