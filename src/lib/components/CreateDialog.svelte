@@ -33,7 +33,7 @@
 
 <!-- Modal -->
 {#if open}
-  <div class="fixed inset-0 bg-black/30 flex items-center justify-center z-50">
+  <div class="top-70 left-140 fixed inset-0 bg-black/20 flex items-center justify-center z-50">
     <dialog
       open
       class="p-6 bg-white rounded-2xl shadow-xl w-full max-w-md border border-blue-100"
