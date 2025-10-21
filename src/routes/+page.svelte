@@ -13,6 +13,11 @@
   onMount(() => {
     if (browser) {
       items = getItems();
+
+      // ask permission once on mount (Chrome needs this early)
+      if ('Notification' in window && Notification.permission === 'default') {
+        Notification.requestPermission();
+      }
     }
   });
 
@@ -32,7 +37,11 @@
     const prev = items[idx].lane;
     items[idx].lane = targetLane;
     items = [...items];
-    if (prev !== 'done' && targetLane === 'done') notifyDone(items[idx]);
+
+    // ✅ Trigger notification when moved to "done"
+    if (prev !== 'done' && targetLane === 'done') {
+      notifyDone(items[idx]);
+    }
   }
 
   function handleDelete(item) {
@@ -50,25 +59,27 @@
   }
 </script>
 
-<!-- Header with country info -->
 <Header title="Kanban Board" />
 
 <main class="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 font-sans">
-  <!-- Sticky Top Bar -->
   <div
     class="sticky top-0 left-0 z-40 backdrop-blur bg-white/90 border-b border-slate-200 shadow-sm flex items-center justify-between px-6 py-3"
   >
     <CreateDialog onCreate={addItem} />
-
+    <button
+      onclick={enableNotifications}
+      class="px-4 py-2 text-sm font-medium bg-blue-600 text-white rounded-lg shadow-sm hover:bg-blue-700 hover:shadow transition-all"
+    >
+      🔔 Enable Notifications
+    </button>
     <button
       onclick={exportCSV}
-      class="px-4 py-2 text-sm font-medium bg-blue-600 text-white rounded-lg shadow-sm hover:bg-blue-700 hover:shadow transition-all"
+      class="px-4 py-2 text-sm font-medium bg-green-600 text-white rounded-lg shadow-sm hover:bg-green-700 hover:shadow transition-all"
     >
       ⬇️ Export CSV
     </button>
   </div>
 
-  <!-- Kanban Board -->
   <section class="max-w-7xl mx-auto px-4 py-6">
     <h1 class="text-2xl font-bold text-blue-700 mb-4 tracking-tight">
       Project Overview
